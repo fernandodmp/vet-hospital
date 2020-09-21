@@ -30,7 +30,7 @@ describe('DoctorsRepository', () => {
     });
 
     it('should throw error if save fails', async () => {
-      const spy = jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
+      jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -43,7 +43,7 @@ describe('DoctorsRepository', () => {
     });
 
     it('should undo creation if save fails', async () => {
-      const spy = jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
+      jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -115,7 +115,7 @@ describe('DoctorsRepository', () => {
         especialidade: 'Cardiologista',
       });
 
-      const spy = jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
+      jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -197,7 +197,7 @@ describe('DoctorsRepository', () => {
         especialidade: 'Cardiologista',
       });
 
-      const spy = jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
+      jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
         throw new Error();
       });
 

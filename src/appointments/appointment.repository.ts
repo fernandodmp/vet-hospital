@@ -13,8 +13,8 @@ import { UpdateAppointmentDto } from './dtos/update-appointment.dto';
 export class AppointmentsRepository {
   private dataPath: string;
 
-  private appointmentsLastId: number;
-  private appointments: Appointment[];
+  appointmentsLastId: number;
+  appointments: Appointment[];
 
   constructor() {
     this.dataPath = `${__dirname}/../../data`;
@@ -85,5 +85,13 @@ export class AppointmentsRepository {
     }
 
     return this.appointments[appointmentIndex];
+  }
+
+  findOne(id: number) {
+    const appointment = this.appointments.find(
+      appointment => appointment.id === id,
+    );
+    if (!appointment) throw new NotFoundException();
+    return appointment;
   }
 }

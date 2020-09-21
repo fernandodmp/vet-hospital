@@ -51,3 +51,13 @@ $ npm run start:prod
 ## Endpoints
 
 A coleção de endpoints do Postman está disponível na pasta dev-data
+
+## Testes
+
+```bash
+#run all tests
+$ yarn run test
+
+#run test coverage
+$ yarn run test:cov
+```

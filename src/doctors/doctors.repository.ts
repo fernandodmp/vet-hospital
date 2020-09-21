@@ -1,13 +1,13 @@
 import { CreateDoctorDto } from './dtos/create-doctor.dto';
 import { Doctor } from './doctor.entity';
 import * as fs from 'fs';
-import * as util from 'util';
 import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { UpdateDoctorDto } from './dtos/update-doctor.dto';
+import { save } from '../utils/IOUtils';
 
 @Injectable()
 export class DoctorsRepository {
@@ -27,38 +27,14 @@ export class DoctorsRepository {
     ).id;
   }
 
-  async save() {
-    const writeFile = util.promisify(fs.writeFile);
-    try {
-      await writeFile(
-        this.dataPath + '/doctors.json',
-        JSON.stringify(this.doctors),
-      );
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async saveLastId() {
-    const writeFile = util.promisify(fs.writeFile);
-    try {
-      await writeFile(
-        this.dataPath + '/doctorsIndex.json',
-        JSON.stringify({ id: this.doctorsLastId }),
-      );
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
   async create(createDoctorDto: CreateDoctorDto) {
     const { nome, especialidade } = createDoctorDto;
     const doctor = new Doctor(this.doctorsLastId + 1, nome, especialidade);
     this.doctors.push(doctor);
 
     try {
-      this.save();
-      this.saveLastId();
+      await save(this.dataPath + '/doctors.json', this.doctors);
+      await save(this.dataPath + '/doctorsId.json', { id: this.doctorsLastId });
     } catch (error) {
       this.doctors.pop();
       throw new InternalServerErrorException();
@@ -87,7 +63,7 @@ export class DoctorsRepository {
     }
 
     try {
-      await this.save();
+      await save(this.dataPath + '/doctors.json', this.doctors);
     } catch (error) {
       throw new InternalServerErrorException();
     }
@@ -103,6 +79,13 @@ export class DoctorsRepository {
     }
 
     const deletedDoctor = this.doctors.splice(doctorIndex, 1)[0];
+
+    try {
+      await save(this.dataPath + '/doctors.json', this.doctors);
+    } catch (error) {
+      this.doctors.splice(doctorIndex, 0, deletedDoctor);
+      throw new InternalServerErrorException();
+    }
 
     return deletedDoctor;
   }

@@ -8,6 +8,14 @@ import { AppointmentStatus } from './appointment.entity';
 
 jest.mock('../utils/IOUtils.ts');
 
+const dogAppointmentDto = {
+  nome: 'Apolo',
+  raca: 'SRD',
+  especie: 'Cachorro',
+  atendimento: 'Ortopedia',
+  urgencia: false,
+};
+
 describe('AppointmentsRpository', () => {
   let appointmentsRepository: AppointmentsRepository;
 
@@ -23,13 +31,7 @@ describe('AppointmentsRpository', () => {
     it('should save the files', async () => {
       const spy = jest.spyOn(IOUTils, 'save');
 
-      await appointmentsRepository.create({
-        nome: 'Apolo',
-        raca: 'SRD',
-        especie: 'Cachorro',
-        atendimento: 'Ortopedia',
-        urgencia: false,
-      });
+      await appointmentsRepository.create(dogAppointmentDto);
       expect(spy).toBeCalledTimes(2);
     });
 
@@ -39,26 +41,14 @@ describe('AppointmentsRpository', () => {
       });
 
       expect(
-        appointmentsRepository.create({
-          nome: 'Apolo',
-          raca: 'SRD',
-          especie: 'Cachorro',
-          atendimento: 'Ortopedia',
-          urgencia: false,
-        }),
+        appointmentsRepository.create(dogAppointmentDto),
       ).rejects.toThrow();
 
       expect(appointmentsRepository.findAll()).toHaveLength(0);
     });
 
     it('should create a new appointment', async () => {
-      const result = await appointmentsRepository.create({
-        nome: 'Apolo',
-        raca: 'SRD',
-        especie: 'Cachorro',
-        atendimento: 'Ortopedia',
-        urgencia: false,
-      });
+      const result = await appointmentsRepository.create(dogAppointmentDto);
 
       expect(result).toEqual({
         nome: 'Apolo',
@@ -86,13 +76,7 @@ describe('AppointmentsRpository', () => {
 
   describe('findAll', () => {
     it('should find all appointments', async () => {
-      await appointmentsRepository.create({
-        nome: 'Apolo',
-        raca: 'SRD',
-        especie: 'Cachorro',
-        atendimento: 'Ortopedia',
-        urgencia: false,
-      });
+      await appointmentsRepository.create(dogAppointmentDto);
 
       const result = appointmentsRepository.findAll();
       expect(result).toEqual([
@@ -111,13 +95,7 @@ describe('AppointmentsRpository', () => {
     describe('update', () => {
       it('should save', async () => {
         const spy = jest.spyOn(IOUTils, 'save');
-        await appointmentsRepository.create({
-          nome: 'Apolo',
-          raca: 'SRD',
-          especie: 'Cachorro',
-          atendimento: 'Ortopedia',
-          urgencia: false,
-        });
+        await appointmentsRepository.create(dogAppointmentDto);
 
         await appointmentsRepository.update(1, {
           status: AppointmentStatus.CANCELADO,
@@ -127,13 +105,7 @@ describe('AppointmentsRpository', () => {
       });
 
       it('should undo update if save fails', async () => {
-        await appointmentsRepository.create({
-          nome: 'Apolo',
-          raca: 'SRD',
-          especie: 'Cachorro',
-          atendimento: 'Ortopedia',
-          urgencia: false,
-        });
+        await appointmentsRepository.create(dogAppointmentDto);
 
         jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
           throw new Error();
@@ -151,13 +123,7 @@ describe('AppointmentsRpository', () => {
       });
 
       it('should update appointment status to CANCELADO', async () => {
-        await appointmentsRepository.create({
-          nome: 'Apolo',
-          raca: 'SRD',
-          especie: 'Cachorro',
-          atendimento: 'Ortopedia',
-          urgencia: false,
-        });
+        await appointmentsRepository.create(dogAppointmentDto);
 
         const result = await appointmentsRepository.update(1, {
           status: AppointmentStatus.CANCELADO,
@@ -167,13 +133,7 @@ describe('AppointmentsRpository', () => {
       });
 
       it('should update appointment status to ATENDIDO', async () => {
-        await appointmentsRepository.create({
-          nome: 'Apolo',
-          raca: 'SRD',
-          especie: 'Cachorro',
-          atendimento: 'Ortopedia',
-          urgencia: false,
-        });
+        await appointmentsRepository.create(dogAppointmentDto);
 
         const result = await appointmentsRepository.update(1, {
           status: AppointmentStatus.ATENDIDO,
@@ -191,15 +151,9 @@ describe('AppointmentsRpository', () => {
       });
     });
 
-    describe('findDoctor', () => {
-      it('should return the doctor', async () => {
-        await appointmentsRepository.create({
-          nome: 'Apolo',
-          raca: 'SRD',
-          especie: 'Cachorro',
-          atendimento: 'Ortopedia',
-          urgencia: false,
-        });
+    describe('findOne', () => {
+      it('should return the appointment', async () => {
+        await appointmentsRepository.create(dogAppointmentDto);
 
         const result = appointmentsRepository.findOne(1);
         expect(result).toEqual({

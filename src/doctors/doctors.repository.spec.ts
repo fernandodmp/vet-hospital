@@ -1,11 +1,17 @@
 import { DoctorsRepository } from './doctors.repository';
 import IOUTils from '../utils/IOUtils';
+import { CreateDoctorDto } from './dtos/create-doctor.dto';
 import {
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
 
 jest.mock('../utils/IOUtils.ts');
+
+const doctorDto: CreateDoctorDto = {
+  nome: 'Fernando',
+  especialidade: 'Cardiologista',
+};
 
 describe('DoctorsRepository', () => {
   let doctorsRepository: DoctorsRepository;
@@ -34,12 +40,9 @@ describe('DoctorsRepository', () => {
         throw new Error();
       });
 
-      expect(
-        doctorsRepository.create({
-          nome: 'Fernando',
-          especialidade: 'Cardiologista',
-        }),
-      ).rejects.toThrowError(InternalServerErrorException);
+      expect(doctorsRepository.create(doctorDto)).rejects.toThrowError(
+        InternalServerErrorException,
+      );
     });
 
     it('should undo creation if save fails', async () => {
@@ -47,21 +50,13 @@ describe('DoctorsRepository', () => {
         throw new Error();
       });
 
-      expect(
-        doctorsRepository.create({
-          nome: 'Fernando',
-          especialidade: 'Cardiologista',
-        }),
-      ).rejects.toThrow();
+      expect(doctorsRepository.create(doctorDto)).rejects.toThrow();
 
       expect(doctorsRepository.findAll()).toHaveLength(0);
     });
 
     it('should create a new doctor', async () => {
-      const result = await doctorsRepository.create({
-        nome: 'Fernando',
-        especialidade: 'Cardiologista',
-      });
+      const result = await doctorsRepository.create(doctorDto);
       expect(result).toEqual({
         especialidade: 'Cardiologista',
         id: 1,
@@ -81,10 +76,7 @@ describe('DoctorsRepository', () => {
 
   describe('findAll', () => {
     it('should return all of the doctors', async () => {
-      await doctorsRepository.create({
-        nome: 'Fernando',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       await doctorsRepository.create({
         nome: 'Joao',
@@ -99,10 +91,7 @@ describe('DoctorsRepository', () => {
   describe('update', () => {
     it('should save', async () => {
       const spy = jest.spyOn(IOUTils, 'save');
-      await doctorsRepository.create({
-        nome: 'Fernand',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       await doctorsRepository.update(1, { nome: 'Fernando' });
 
@@ -110,10 +99,7 @@ describe('DoctorsRepository', () => {
     });
 
     it('should undo update if save fails', async () => {
-      await doctorsRepository.create({
-        nome: 'Fernando',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
         throw new Error();
@@ -131,10 +117,7 @@ describe('DoctorsRepository', () => {
     });
 
     it('should update doctor name', async () => {
-      await doctorsRepository.create({
-        nome: 'Fernand',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       const result = await doctorsRepository.update(1, { nome: 'Fernando' });
 
@@ -142,10 +125,7 @@ describe('DoctorsRepository', () => {
     });
 
     it('should update doctor specialization', async () => {
-      await doctorsRepository.create({
-        nome: 'Fernando',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       const result = await doctorsRepository.update(1, {
         especialidade: 'Odontologista',
@@ -157,13 +137,10 @@ describe('DoctorsRepository', () => {
     it('should update doctor name and specialization', async () => {
       await doctorsRepository.create({
         nome: 'Fernand',
-        especialidade: 'Cardiologista',
-      });
-
-      const result = await doctorsRepository.update(1, {
-        nome: 'Fernando',
         especialidade: 'Odontologia',
       });
+
+      const result = await doctorsRepository.update(1, doctorDto);
 
       expect(result).toEqual({
         id: 1,
@@ -181,10 +158,7 @@ describe('DoctorsRepository', () => {
 
   describe('delete', () => {
     it('should delete', async () => {
-      await doctorsRepository.create({
-        nome: 'Fernando',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       await doctorsRepository.delete(1);
 
@@ -192,10 +166,7 @@ describe('DoctorsRepository', () => {
     });
 
     it('should undo deletion if save fails', async () => {
-      await doctorsRepository.create({
-        nome: 'Fernando',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       jest.spyOn(IOUTils, 'save').mockImplementationOnce(() => {
         throw new Error();
@@ -231,10 +202,7 @@ describe('DoctorsRepository', () => {
 
   describe('findDoctor', () => {
     it('should return the doctor', async () => {
-      await doctorsRepository.create({
-        nome: 'Fernando',
-        especialidade: 'Cardiologista',
-      });
+      await doctorsRepository.create(doctorDto);
 
       const result = doctorsRepository.findDoctor(1);
       expect(result).toEqual({

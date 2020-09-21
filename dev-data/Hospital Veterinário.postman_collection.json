@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"nome\": \"Fernando\",\n    \"especialidade\": \"Clinica Geral\"\n}",
+					"raw": "{\n    \"nome\": \"Fernando\",\n    \"especialidade\": \"Ortopedia\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -152,13 +152,13 @@
 			"response": []
 		},
 		{
-			"name": "Create Appointments Copy",
+			"name": "Update Appointment status",
 			"request": {
-				"method": "POST",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"nome\": \"Apolo\",\n    \"raca\": \"SRD\",\n    \"especie\": \"Cachorro\",\n    \"atendimento\": \"Ortopedia\",\n    \"urgencia\": false\n}",
+					"raw": "{\n    \"status\": \"ATENDIDO\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -166,13 +166,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/appointments",
+					"raw": "localhost:3000/appointments/3",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"appointments"
+						"appointments",
+						"3"
 					]
 				}
 			},

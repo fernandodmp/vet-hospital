@@ -88,4 +88,13 @@ export class DoctorsRepository {
 
     return deletedDoctor;
   }
+
+  findDoctor(id: number) {
+    const doctor = this.doctors.find(doctor => doctor.id === id);
+    if (!doctor) {
+      throw new NotFoundException();
+    }
+
+    return doctor;
+  }
 }

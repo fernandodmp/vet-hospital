@@ -15,6 +15,10 @@ export class DoctorsService {
     return this.doctorsRepository.findAll();
   }
 
+  findDoctor(id: number) {
+    return this.doctorsRepository.findDoctor(id);
+  }
+
   async update(id: number, updateDoctorDto: UpdateDoctorDto) {
     return this.doctorsRepository.update(id, updateDoctorDto);
   }

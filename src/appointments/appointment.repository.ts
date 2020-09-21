@@ -51,4 +51,10 @@ export class AppointmentsRepository {
   findAll() {
     return this.appointments;
   }
+
+  findOpen() {
+    return this.appointments.filter(
+      appointment => appointment.status === AppointmentStatus.PENDENTE,
+    );
+  }
 }

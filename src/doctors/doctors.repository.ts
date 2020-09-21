@@ -12,7 +12,6 @@ import { save } from '../utils/IOUtils';
 @Injectable()
 export class DoctorsRepository {
   dataPath: string;
-  indexesFile: string;
 
   doctorsLastId: number;
   doctors: Doctor[];

@@ -61,3 +61,7 @@ $ yarn run test
 #run test coverage
 $ yarn run test:cov
 ```
+
+## Documentação
+
+A documentação pode ser encontrada [aqui](https://github.com/fernandodmp/vet-hospital/blob/master/DOCS.md)

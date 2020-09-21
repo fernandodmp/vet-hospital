@@ -1,5 +1,4 @@
-import { IsBoolean, IsEnum, IsString } from 'class-validator';
-import { AppointmentStatus } from '../appointment.entity';
+import { IsBoolean, IsString } from 'class-validator';
 export class CreateAppointmentDto {
   @IsString()
   nome: string;

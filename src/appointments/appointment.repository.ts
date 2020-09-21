@@ -1,8 +1,13 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Appointment, AppointmentStatus } from './appointment.entity';
 import * as fs from 'fs';
 import { CreateAppointmentDto } from './dtos/create-appointment';
 import { save } from '../utils/IOUtils';
+import { UpdateAppointmentDto } from './dtos/update-appointment.dto';
 
 @Injectable()
 export class AppointmentsRepository {
@@ -56,5 +61,29 @@ export class AppointmentsRepository {
     return this.appointments.filter(
       appointment => appointment.status === AppointmentStatus.PENDENTE,
     );
+  }
+
+  async update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
+    const appointmentIndex = this.appointments.findIndex(
+      appointment => appointment.id === id,
+    );
+
+    if (appointmentIndex === -1) {
+      throw new NotFoundException();
+    }
+
+    const { status } = updateAppointmentDto;
+
+    const oldAppointment = { ...this.appointments[appointmentIndex] };
+    this.appointments[appointmentIndex].status = status;
+
+    try {
+      await save(this.dataPath + '/appointments.json', this.appointments);
+    } catch (error) {
+      this.appointments[appointmentIndex] = oldAppointment;
+      throw new InternalServerErrorException();
+    }
+
+    return this.appointments[appointmentIndex];
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AppointmentsRepository } from './appointment.repository';
 import { CreateAppointmentDto } from './dtos/create-appointment';
 import { DoctorsService } from '../doctors/doctors.service';
+import { UpdateAppointmentDto } from './dtos/update-appointment.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -33,5 +34,9 @@ export class AppointmentsService {
     }
 
     return openAppointments[0];
+  }
+
+  async update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
+    return this.appointmentsRepository.update(id, updateAppointmentDto);
   }
 }

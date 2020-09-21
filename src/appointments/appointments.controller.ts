@@ -4,10 +4,12 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dtos/create-appointment';
+import { UpdateAppointmentDto } from './dtos/update-appointment.dto';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -21,6 +23,14 @@ export class AppointmentsController {
   @Post()
   async create(@Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentsService.create(createAppointmentDto);
+  }
+
+  @Patch('/:id')
+  async update(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() updateAppointmentDto: UpdateAppointmentDto,
+  ) {
+    return this.appointmentsService.update(id, updateAppointmentDto);
   }
 
   @Get('/doctor/:id')

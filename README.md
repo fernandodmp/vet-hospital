@@ -47,3 +47,7 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+## Endpoints
+
+A coleção de endpoints do Postman está disponível na pasta dev-data

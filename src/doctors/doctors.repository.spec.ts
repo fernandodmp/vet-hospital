@@ -145,7 +145,7 @@ describe('DoctorsRepository', () => {
       expect(result).toEqual({
         id: 1,
         nome: 'Fernando',
-        especialidade: 'Odontologia',
+        especialidade: 'Cardiologista',
       });
     });
 

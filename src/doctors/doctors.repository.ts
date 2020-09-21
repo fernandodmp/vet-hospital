@@ -53,6 +53,8 @@ export class DoctorsRepository {
       throw new NotFoundException();
     }
 
+    const oldDoctor = { ...this.doctors[doctorIndex] };
+
     if (updateDoctorDto.nome) {
       this.doctors[doctorIndex].nome = updateDoctorDto.nome;
     }
@@ -64,6 +66,7 @@ export class DoctorsRepository {
     try {
       await save(this.dataPath + '/doctors.json', this.doctors);
     } catch (error) {
+      this.doctors[doctorIndex] = oldDoctor;
       throw new InternalServerErrorException();
     }
 

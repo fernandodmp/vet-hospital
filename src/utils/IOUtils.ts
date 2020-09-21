@@ -10,3 +10,7 @@ export const save = async (path: string, data: any) => {
     throw new InternalServerErrorException();
   }
 };
+
+const IOUtils = { save };
+
+export default IOUtils;

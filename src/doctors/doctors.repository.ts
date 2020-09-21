@@ -8,23 +8,44 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UpdateDoctorDto } from './dtos/update-doctor.dto';
-import { doc } from 'prettier';
 
 @Injectable()
 export class DoctorsRepository {
-  file: string;
+  dataPath: string;
+  indexesFile: string;
 
+  doctorsLastId: number;
   doctors: Doctor[];
 
   constructor() {
-    this.file = `${__dirname}/../../data/doctors.json`;
-    this.doctors = JSON.parse(fs.readFileSync(this.file).toString());
+    this.dataPath = `${__dirname}/../../data`;
+    this.doctors = JSON.parse(
+      fs.readFileSync(this.dataPath + '/doctors.json').toString(),
+    );
+    this.doctorsLastId = JSON.parse(
+      fs.readFileSync(this.dataPath + '/doctorsId.json').toString(),
+    ).id;
   }
 
   async save() {
     const writeFile = util.promisify(fs.writeFile);
     try {
-      await writeFile(this.file, JSON.stringify(this.doctors));
+      await writeFile(
+        this.dataPath + '/doctors.json',
+        JSON.stringify(this.doctors),
+      );
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async saveLastId() {
+    const writeFile = util.promisify(fs.writeFile);
+    try {
+      await writeFile(
+        this.dataPath + '/doctorsIndex.json',
+        JSON.stringify({ id: this.doctorsLastId }),
+      );
     } catch (error) {
       throw new InternalServerErrorException();
     }
@@ -32,16 +53,18 @@ export class DoctorsRepository {
 
   async create(createDoctorDto: CreateDoctorDto) {
     const { nome, especialidade } = createDoctorDto;
-    const doctor = new Doctor(this.doctors.length + 1, nome, especialidade);
+    const doctor = new Doctor(this.doctorsLastId + 1, nome, especialidade);
     this.doctors.push(doctor);
 
     try {
       this.save();
+      this.saveLastId();
     } catch (error) {
       this.doctors.pop();
       throw new InternalServerErrorException();
     }
 
+    this.doctorsLastId++;
     return doctor;
   }
 
@@ -70,5 +93,17 @@ export class DoctorsRepository {
     }
 
     return this.doctors[doctorIndex];
+  }
+
+  async delete(id: number) {
+    const doctorIndex = this.doctors.findIndex(doctor => doctor.id === id);
+
+    if (doctorIndex === -1) {
+      throw new NotFoundException();
+    }
+
+    const deletedDoctor = this.doctors.splice(doctorIndex, 1)[0];
+
+    return deletedDoctor;
   }
 }

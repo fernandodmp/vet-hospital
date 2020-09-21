@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { DoctorsService } from './doctors.service';
 import { CreateDoctorDto } from './dtos/create-doctor.dto';
@@ -31,5 +32,10 @@ export class DoctorsController {
     @Body() updateDoctorDto: UpdateDoctorDto,
   ) {
     return this.doctorsService.update(id, updateDoctorDto);
+  }
+
+  @Delete('/:id')
+  async delete(@Param('id', new ParseIntPipe()) id: number) {
+    return this.doctorsService.delete(id);
   }
 }

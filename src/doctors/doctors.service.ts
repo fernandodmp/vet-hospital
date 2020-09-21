@@ -18,4 +18,8 @@ export class DoctorsService {
   async update(id: number, updateDoctorDto: UpdateDoctorDto) {
     return this.doctorsRepository.update(id, updateDoctorDto);
   }
+
+  async delete(id: number) {
+    return this.doctorsRepository.delete(id);
+  }
 }

@@ -249,5 +249,9 @@ Efetua a busca do próximo atendimento de um doutor já cadastradol, sendo este 
   - **Code:** 200 <br />
     **Content:** `{ "id": 2, "nome": "Apolo", "especie": "Cachorro", "raca": "SRD", "atendimento": "Ortopedia", "urgencia": false, "status": "PENDENTE" }`
 
+    OR
+
+  - **Code:** 204 <br/>
+
 * **Error Response:**
   - **Code:** 500 INTERNAL SERVER ERROR <br />

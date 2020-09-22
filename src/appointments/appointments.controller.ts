@@ -6,7 +6,9 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dtos/create-appointment';
 import { UpdateAppointmentDto } from './dtos/update-appointment.dto';
@@ -34,7 +36,13 @@ export class AppointmentsController {
   }
 
   @Get('/doctor/:id')
-  async findDoctorNextAppointment(@Param('id', new ParseIntPipe()) id: number) {
-    return this.appointmentsService.findDoctorNextAppointment(id);
+  async findDoctorNextAppointment(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Res() res: Response,
+  ) {
+    const appointment = this.appointmentsService.findDoctorNextAppointment(id);
+    return appointment
+      ? res.status(200).json(appointment)
+      : res.status(204).json();
   }
 }
